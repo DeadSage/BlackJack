@@ -30,7 +30,7 @@ answer = {
 }
 
 sock = socket.socket()
-sock.bind(('', 9014))
+sock.bind(('', 9015))
 sock.listen(1)
 print("Start Listen")
 conn, addr = sock.accept()
@@ -41,17 +41,17 @@ while True:
     parse = parse_message(message)
     user_cdm = parse.get('user_cdm')
     print(user_cdm)
-    server_answer = poleteli_obratno(answer, input())
-    sock.send(server_answer.encode('utf-8'))
     if not message:
+        conn.close()
         break
 
-    # if user_cdm == 'no':
-    #     data = 'fuck'
-    #
+    if user_cdm == 'no':
+        conn.close()
     # if user_cdm == 'yes':
     #     deck.shuffle()
     #     player.draw(deck, 2)
     #     data = player.hand
+    server_answer = poleteli_obratno(answer, input())
+    sock.send(server_answer.encode('utf-8'))
 
 conn.close()

@@ -16,7 +16,7 @@ data = {
 }
 
 sock = socket.socket()
-sock.connect(('localhost', 9014))
+sock.connect(('localhost', 9015))
 print(sock.recv(1024).decode("utf-8"))
 while True:
     message = poleteli(data, input())
