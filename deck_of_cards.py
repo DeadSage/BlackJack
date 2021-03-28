@@ -24,12 +24,13 @@ class Dealer:
 
 
 class Card:
-    def __init__(self, suit, val):
+    def __init__(self, suit, val, points):
         """
             инициализация масти и значения карты
         """
         self.suit = suit
         self.value = val
+        self.points = points
 
     def __repr__(self):
         return f'{self.show()}'
@@ -61,6 +62,7 @@ class Deck:
         """
         self.cards = []
         self.generate()
+        self.shuffle()
 
     def show(self):
         """
@@ -76,7 +78,17 @@ class Deck:
         self.cards = []
         for suit in ['Hearts', 'Clubs', 'Diamonds', 'Spades']:
             for val in range(1, 13):
-                self.cards.append(Card(suit, val))
+                if val == 'Ace':
+                    points = 1
+                if val == 'Jack':
+                    points = 11
+                if val == 'Queen':
+                    points = 12
+                if val == 'King':
+                    points = 13
+                else:
+                    points = int(val)
+                self.cards.append(Card(suit, val, points))
 
     def shuffle(self):
         """
@@ -98,6 +110,21 @@ class Player:
 
     def __init__(self):
         self.hand = []
+        self.bet = 0
+        self.sum_p = 0
+
+    def sum_points(self):
+        self.sum_p = sum([card.points for card in self.hand])
+
+    def change_bet(self):
+        max_bet = 50
+        min_bet = 0
+        while True:
+            val = int(input('Make your bet: '))
+            if min_bet < val < max_bet:
+                self.bet = val
+            print(f'Player give {self.bet}')
+            break
 
     def draw(self, deck, num):
         """
@@ -109,6 +136,7 @@ class Player:
                 self.hand.append(card)
             else:
                 return False
+            self.sum_points()
         return True
 
     def showHand(self):
@@ -116,7 +144,8 @@ class Player:
         отображение руки игрока
         """
         for card in self.hand:
-            return f'{card.show()}'
+            print(f'{card.show()} ', end='')
+        print(f'\nTotal points: {self.sum_p}')
 
     def discard(self):
         """
@@ -125,10 +154,65 @@ class Player:
         return self.hand.pop()
 
 
+class Bot(Player):
+    def __init__(self, position):
+        self.hand = []
+        self.position = position
+        self.bet = 0
+
+    def change_bet(self):
+        max_bet = 50
+        min_bet = 0
+        self.bet = random.randint(min_bet, max_bet)
+        print(f'Bot give {self.bet}')
+
+
+class Game:
+    def __init__(self):
+        self.players = []
+        # self.dealer = Dealer()
+        self.a_p_count = 1
+        self.deck = Deck()
+        self.max_bet, self.min_bet = 50, 0
+
+    def starting(self):
+        choice = input("Hello User! do you wanna play BlackJack(yes/no)")
+        if choice == 'yes':
+            return True
+        if choice == 'no':
+            return False
+
+    def gen_table(self):
+        p_count = int(input('Enter count of players: '))
+        self.a_p_count = p_count + 1
+        for i in range(p_count):
+            b = Bot(position=i)
+            # print(f'{b} is created')
+            self.players.append(b)
+        self.players.append(Player())
+
+    def bet(self):
+        for player in self.players:
+            player.change_bet()
+
+    def game_start(self):
+        if not self.starting():
+            self.starting()
+        self.gen_table()
+        self.bet()
+        self.create_hand()
+
+    def create_hand(self):
+        for player in self.players:
+            Player.draw(player, deck, 2)
+            print(f'{player.showHand()}')
+
+
 deck = Deck()
 dealer = Dealer()
 player = Player()
-# deck.shuffle()
+game = Game()
+print(game.game_start())
 # player.draw(deck, 2)
 # print(player.hand)
 #
