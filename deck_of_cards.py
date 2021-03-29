@@ -117,6 +117,9 @@ class Player:
         self.sum_p = sum([card.points for card in self.hand])
 
     def change_bet(self):
+        """
+        ставим ставочки
+        """
         max_bet = 50
         min_bet = 0
         while True:
@@ -155,6 +158,9 @@ class Player:
 
 
 class Bot(Player):
+    """
+    исскуственный интеллект
+    """
     def __init__(self, position):
         self.hand = []
         self.position = position
@@ -169,6 +175,9 @@ class Bot(Player):
 
 class Game:
     def __init__(self):
+        """
+        игра содержит в себе информацию об игроках за столом, колоде для игры и ставках
+        """
         self.players = []
         # self.dealer = Dealer()
         self.a_p_count = 1
@@ -176,6 +185,9 @@ class Game:
         self.max_bet, self.min_bet = 50, 0
 
     def starting(self):
+        """
+        предложение поиграться
+        """
         choice = input("Hello User! do you wanna play BlackJack(yes/no)")
         if choice == 'yes':
             return True
@@ -183,6 +195,9 @@ class Game:
             return False
 
     def gen_table(self):
+        """
+        садимся за столик
+        """
         p_count = int(input('Enter count of players: '))
         self.a_p_count = p_count + 1
         for i in range(p_count):
@@ -192,10 +207,16 @@ class Game:
         self.players.append(Player())
 
     def bet(self):
+        """
+        ставки для ботов рандомятся, для игрока указывается
+        """
         for player in self.players:
             player.change_bet()
 
     def game_start(self):
+        """
+        начало игры с рассадкой, ставками и раздачей карт
+        """
         if not self.starting():
             self.starting()
         self.gen_table()
