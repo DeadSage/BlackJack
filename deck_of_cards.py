@@ -148,6 +148,7 @@ class Player:
             return False
 
 
+
 # class Dealer(Player):
 #     """
 #     инициализация карт диллера
@@ -183,6 +184,7 @@ class Player:
 #         max_bet = 50
 #         min_bet = 0
 #         self.bet = random.randint(min_bet, max_bet)
+
 
 
 class Bot(Player):
@@ -275,15 +277,13 @@ class Game:
 
     def remove_player(self, player):
         player.showHand()
-        if isinstance(player, Player):
-            print('You are loser!')
-        elif isinstance(player, Bot):
-            print(player, 'are fall!')
+        print(f'{player} are fall!')
         self.players.remove(player)
 
     def check_wins(self):
         for player in self.players:
-            player.money += player.bet * 2
+            if player.sum_p < 21:
+                player.money += player.bet * 2
         if isinstance(player, Bot):
             print('Bot wins!')
         if isinstance(player, Player):
